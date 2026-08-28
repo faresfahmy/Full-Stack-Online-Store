@@ -7,7 +7,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 import { useForm } from "react-hook-form";
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { fetchSginUpUser } from '../api/api';
+import { fetchSginUpUser } from '../api/api.user';
 import LoadingButton from '../components/loadingButton';
 
 const signupSchema = z.object({

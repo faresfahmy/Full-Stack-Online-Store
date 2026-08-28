@@ -1,5 +1,5 @@
 import { useQuery } from "@tanstack/react-query"
-import { fetchLoginUser, fetchLogoutUser, getDetailsCurrentUser } from "../api/api"
+import { fetchLoginUser, fetchLogoutUser, getDetailsCurrentUser } from "../api/api.user"
 export const useLoginUser =({
     role,
     password,

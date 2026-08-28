@@ -3,7 +3,7 @@ import { Mail, Lock, EyeOff, Eye } from 'lucide-react';
 import Logo from '../components/Logo';
 import { motion } from "framer-motion"
 import { Link, NavLink, useNavigate } from 'react-router-dom';
-import { fetchLoginUser } from '../api/api';
+import { fetchLoginUser } from '../api/api.user';
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 import { useForm } from "react-hook-form";

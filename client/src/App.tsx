@@ -10,6 +10,7 @@ import { UserContextProvider, useUserContext } from "./context/userContextProvid
 import MainLayout from "./pages/MainLayout"
 import Profile from "./pages/Profile"
 import EditProfile from "./pages/EditProfile"
+import Products from "./pages/Products"
 export default function App() {
   const isAuth = useUserContext();
   console.log(isAuth);
@@ -23,6 +24,7 @@ export default function App() {
               <Route path='/' element={<Layout />}>
                 <Route index element={<Home />} />
                 <Route path="/dashboardadmin" element={<DashboardAdmin />} />
+                <Route path="/products" element={<Products />} />
                 <Route path="/profile" element={<Profile />} />
                 <Route path="/profile/edit" element={<EditProfile />} />
               </Route>

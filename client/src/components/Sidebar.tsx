@@ -6,7 +6,7 @@ import { CircleArrowDownIcon, Gem, ListOrdered, Grid3X3, LayoutDashboardIcon, Pa
 import { Home, Settings } from 'lucide-react'
 import Logo from './Logo'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
-import { fetchLogoutUser } from '../api/api'
+import { fetchLogoutUser } from '../api/api.user'
 const navLinks = [
   {
     page: "Home",

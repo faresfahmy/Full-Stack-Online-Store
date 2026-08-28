@@ -3,7 +3,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import { assets } from '../assets/assets';
 import { useUserContext } from '../context/userContextProvider';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { fetchEditUser } from '../api/api';
+import { fetchEditUser } from '../api/api.user';
 import { motion } from "framer-motion"
 import { useNavigate } from 'react-router-dom';
 import LoadingButton from '../components/loadingButton';

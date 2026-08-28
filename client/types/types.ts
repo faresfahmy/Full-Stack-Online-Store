@@ -32,3 +32,28 @@ export interface FILE_CLOUDINARY {
     secure_url: string,
     asset_folder: String
 }
+export interface productsAll{
+    count:number,
+    pages:number,
+    products:productTypes[]
+}
+export interface productTypes{
+    _id:string,
+    product_name:string,
+    description:string,
+    rating?:number,
+    quantity:number,
+    category:string,
+    price:string,
+    sku:string,
+    likes_product?:string[],
+    img_product?:FILE_CLOUDINARY,
+    ids_users_purchased?:string[]
+}
+
+export interface ResponseProducts{
+    data:productsAll,
+    status: string,
+    statusCode?:number,
+    message?:string
+}
