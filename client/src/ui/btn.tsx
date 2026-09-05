@@ -18,7 +18,7 @@ const buttonVariants = cva(
       },
       size: {
         default:
-          "h-9 rounded-full w-30 hover:after:scale-100 after:opacity-0 hover:after:opacity-60 after:z-[-1] z-20 after:rounded-full after:absolute after:inset-0 after:bg-[#34d399] relative after:duration-200 px-4 py-2",
+          "h-9 flex items-center justify-center rounded-full w-20 hover:after:scale-100 after:opacity-0 hover:after:opacity-60 after:z-[-1] z-20 after:rounded-full after:absolute after:inset-0 after:bg-[#34d399] relative after:duration-200 px-5 py-2",
         sm: "h-7 rounded-md px-2 text-xs",
         lg: "h-10 rounded-md px-8",
         icon: "h-9 w-9",

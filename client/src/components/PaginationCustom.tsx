@@ -36,8 +36,8 @@ export default function PaginationCustom({
   const visiblePages = getVisiblePages();
 
   return (
-    <Pagination>
-      <PaginationContent>
+    <Pagination >
+      <PaginationContent className="  flex items-center gap-3">
 
         {page > 1 && (
           <PaginationItem className="text-white cursor-pointer">
@@ -52,7 +52,7 @@ export default function PaginationCustom({
               <PaginationLink
                 key={itemNum}
                 onClick={() => handlePagePlus(itemNum)}
-                className={`cursor-pointer w-8 h-8 rounded-lg font-medium flex items-center justify-center border transition-all ${
+                className={`cursor-pointer w-8 h-8 max-sm:h-5 max-sm:w-5 rounded-lg font-medium max-sm:font-normal flex items-center justify-center border transition-all ${
                   isActive
                     ? "bg-[#10b981] text-white border-[#10b981]"
                     : "bg-[#1e293b] text-slate-300 border-slate-700 hover:bg-slate-800"
@@ -69,7 +69,7 @@ export default function PaginationCustom({
         )}
 
         {page < countPages && (
-          <PaginationItem className="text-white cursor-pointer">
+          <PaginationItem className="text-white cursor-pointer max-sm:text-sm">
             <PaginationNext onClick={() => handlePagePlus(page + 1)} />
           </PaginationItem>
         )}

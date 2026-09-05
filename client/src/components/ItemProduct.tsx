@@ -9,7 +9,7 @@ export default function ItemProduct({detailsProduct}:{detailsProduct:productType
             <td className="py-4 px-4 sm:px-6">
                 <div className="flex items-center gap-3 min-w-[200px]">
                     <img
-                        src={detailsProduct.img_product?.secure_url}
+                        src={detailsProduct.img_product?.[0]?.secure_url}
                         alt={detailsProduct.product_name}
                         className="w-10 h-10 rounded-lg object-cover bg-slate-800 border border-slate-700/50 shrink-0"
                     />

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import AdminHome from '../components/AdminHome';
+import AdminHome from './admin/AdminHome';
 import UserHome from '../components/UserHome';
 import { useUserContext } from '../context/userContextProvider';
 

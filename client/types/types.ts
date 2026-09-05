@@ -47,7 +47,7 @@ export interface productTypes{
     price:string,
     sku:string,
     likes_product?:string[],
-    img_product?:FILE_CLOUDINARY,
+    img_product?:FILE_CLOUDINARY[],
     ids_users_purchased?:string[]
 }
 
@@ -56,4 +56,8 @@ export interface ResponseProducts{
     status: string,
     statusCode?:number,
     message?:string
+}
+export interface FormEdit{
+    username:string,
+    fullname:string,
 }

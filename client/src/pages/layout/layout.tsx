@@ -1,6 +1,6 @@
 import React, { useCallback, useState } from 'react'
 import { Outlet } from 'react-router-dom'
-import Sidebar from '../components/Sidebar'
+import Sidebar from '../../components/Sidebar'
 import { X, Menu } from "lucide-react"
 export default function layout() {
     const [showSidebar, setShowSidebar] = useState<boolean>(false)
@@ -19,6 +19,7 @@ export default function layout() {
                 <Outlet />
             </div>
             <Sidebar showSidebar={showSidebar} setShowSidebar={handleShowSidebar} />
+            
             <div className=' z-50 right-2 top-2 md:hidden fixed'>
                 {
                     showSidebar ? (

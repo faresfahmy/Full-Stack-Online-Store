@@ -3,7 +3,7 @@ import { FILE_CLOUDINARY, payloadLogin } from "../../types/types";
 
 
 export const fetchLoginUser = async ({ role, password, email }: payloadLogin) => {
-    const login = await axios.post("http://localhost:4000/api/users/login", {
+    const login = await axios.post("http://localhost:4000/api/auth/login", {
         password: password,
         email: email,
         role: role
@@ -14,7 +14,7 @@ export const fetchLoginUser = async ({ role, password, email }: payloadLogin) =>
     return login;
 }
 export const fetchSginUpUser = async (dataForm: FormData) => {
-    const signup = await axios.post("http://localhost:4000/api/users/register", dataForm, {
+    const signup = await axios.post("http://localhost:4000/api/auth/register", dataForm, {
         withCredentials: true,
         headers: {
             'Content-Type': 'multipart/form-data',
@@ -31,7 +31,7 @@ export const getDetailsCurrentUser = async () => {
 }
 
 export const fetchLogoutUser = async () => {
-    const detailsUser = await axios.post("http://localhost:4000/api/users/logout", {},
+    const detailsUser = await axios.post("http://localhost:4000/api/auth/logout", {},
         {
             withCredentials: true
         })

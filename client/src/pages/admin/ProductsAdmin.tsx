@@ -1,13 +1,14 @@
 import React, { useState } from 'react';
 import { Search, ChevronDown, Plus, ChevronLeft, ChevronRight } from 'lucide-react';
-import { categoriesProduct } from '../mock/categories';
+import { categoriesProduct } from '../../mock/categories';
 import { v4 as uid4 } from 'uuid';
-import PaginationCustom from '../components/PaginationCustom';
-import { useGetAllProduct } from '../lib/product.query';
+import PaginationCustom from '../../components/PaginationCustom';
+import { useGetAllProduct } from '../../lib/product.query';
 import { motion } from "framer-motion"
 
-import ItemProduct from '../components/ItemProduct';
-import Selekton from '../components/Selekton';
+import ItemProduct from '../../components/ItemProduct';
+import Selekton from '../../components/Selekton';
+import { Link } from 'react-router-dom';
 export default function ProductsAdmin() {
   const [page, setPage] = useState<number>(1);
   const [categorySelected, setCategorySelect] = useState<string>("all")
@@ -34,10 +35,10 @@ export default function ProductsAdmin() {
             <h1 className="text-xl sm:text-2xl font-bold text-white tracking-tight">Products Directory</h1>
             <p className="text-xs text-slate-400 mt-0.5 sm:mt-1">{data?.data.count} total items</p>
           </div>
-          <button className=" cursor-pointer transition-all duration-200 hover:scale-110 flex items-center justify-center gap-1.5 bg-[#10b981] hover:bg-[#059669] text-white font-semibold px-4 py-2 rounded-xl text-sm  border border-[#10b981]/40 border-dashed w-full sm:w-auto">
+          <Link to={"/products/add-product"} className=" cursor-pointer transition-all duration-200 hover:scale-110 flex items-center justify-center gap-1.5 bg-[#10b981] hover:bg-[#059669] text-white font-semibold px-4 py-2 rounded-xl text-sm  border border-[#10b981]/40 border-dashed w-full sm:w-auto">
             <Plus className="w-4 h-4 stroke-[3]" />
             <span>Add New Product</span>
-          </button>
+          </Link>
         </div>
 
         {/* Filter and Search Bar */}
@@ -90,9 +91,20 @@ export default function ProductsAdmin() {
               </thead>
               <tbody className="divide-y divide-slate-800/50 text-xs">
             
-                {isLoading? Array.from({ length: 4 }).map((_, i:number)=>(
+                {isLoading? Array.from({ length: 5 }).map((_, i:number)=>(
                     <tr>
-                    <Selekton key={i} />
+                      <td>
+                        <Selekton key={i} width={595} />
+                      </td>
+                      <td>
+                        <Selekton key={i} width={150} />
+                      </td>
+                      <td>
+                        <Selekton key={i} width={150} />
+                      </td>
+                      <td>
+                        <Selekton key={i} width={150} />
+                      </td>
                     </tr>
                 ))
                     :
@@ -112,7 +124,7 @@ export default function ProductsAdmin() {
             </div>
             {
                 countPages!=1&&(
-                                <div className="flex items-center gap-1.5 sm:mr-10" >
+                                <div className="flex items-center  sm:mr-10" >
                 <PaginationCustom page={page} handlePageMenus={handlePreviousPage} handlePagePlus={handleNextPage} countPages={countPages||1}/>
             </div>
                 )

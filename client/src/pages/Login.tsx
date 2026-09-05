@@ -8,7 +8,6 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 import { useForm } from "react-hook-form";
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { delay } from '../utils/delay';
 import LoadingButton from '../components/loadingButton';
 const schemaLogin = z.object({
   email: z.string()

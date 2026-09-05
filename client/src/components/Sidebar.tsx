@@ -71,7 +71,7 @@ export default function Sidebar({ showSidebar, setShowSidebar }: { showSidebar: 
     >
       <div className='px-5  flex flex-col'>
         {/* Header Section */}
-        <Logo className='mb-7' />
+        <Logo className='mb-7 ' />
         <nav className="flex flex-col gap-3 mb-auto">
           {/* Active Link (Home) */} 
           {navLinks.map((Link: any, i: number) => (
@@ -88,8 +88,8 @@ export default function Sidebar({ showSidebar, setShowSidebar }: { showSidebar: 
         {/* Footer Navigation Links */}
         <nav className="flex mt-5 flex-col gap-3 pt-5 border-t border-[#1a253a]">
           <NavLink to={"/settings"} onClick={handleClickLink} className={({ isActive }) => (isActive ?
-            " bg-[#141f34] flex items-center px-[18px] py-[14px] text-[14px] font-medium rounded-xl text-[#e2e8f0] hover:bg-[#1a253a] hover:text-white transition-colors" :
-            "  flex items-center px-[18px] py-[14px] text-[14px] font-medium rounded-xl text-[#e2e8f0] hover:bg-[#1a253a] hover:text-white transition-colors")}
+            " bg-[#141f34] flex items-center px-[15px] py-[12px] text-[14px] font-medium rounded-xl text-[#e2e8f0] hover:bg-[#1a253a] hover:text-white transition-colors" :
+            "  flex items-center px-[15px] py-[12px] text-[14px] font-medium rounded-xl text-[#e2e8f0] hover:bg-[#1a253a] hover:text-white transition-colors")}
           >
             <Settings onClick={handleClickLink} className="w-5 h-5 mr-4 text-[#94a3b8]" />
             Settings
@@ -103,7 +103,10 @@ export default function Sidebar({ showSidebar, setShowSidebar }: { showSidebar: 
             Profile
           </Link>
         </nav>
-        <button className=' w-fit rounded-2xl bg-[#34d399] px-7 py-3 cursor-pointer font-semibold text-white transition duration-200  hover:bg-[#34d3999f] mt-5 hover:transform hover:scale-90 ' onClick={handleLogout}>Logout</button>
+        <div className=' w-full flex items-center flex-1 justify-start'>
+                  <button className='   rounded-2xl bg-[#34d399] px-4 py-2 cursor-pointer font-semibold text-white transition duration-200  hover:bg-[#34d3999f] mt-5 hover:transform hover:scale-90 ' onClick={handleLogout}>Logout</button>
+
+        </div>
       </div>
 
 

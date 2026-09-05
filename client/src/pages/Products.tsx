@@ -1,5 +1,5 @@
 import React from 'react'
-import ProductsAdmin from './ProductsAdmin'
+import ProductsAdmin from './admin/ProductsAdmin'
 
 export default function Products() {
   return (

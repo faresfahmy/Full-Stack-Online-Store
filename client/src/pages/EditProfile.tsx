@@ -7,11 +7,14 @@ import { fetchEditUser } from '../api/api.user';
 import { motion } from "framer-motion"
 import { useNavigate } from 'react-router-dom';
 import LoadingButton from '../components/loadingButton';
+import { FormEdit } from '../../types/types';
 
 export default function EditProfile() {
   const [hoverAvatar, setHoverAvatar] = useState<boolean>(false);
-  const [fullName, setFullName] = useState<string>('');
-  const [username, setUserName] = useState<string>('');
+  const [formEdit,setFormEdit] = useState<FormEdit>({
+    fullname:'',
+    username:''
+  })
   const [file, setFile] = useState<File | null>(null);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -32,8 +35,8 @@ export default function EditProfile() {
   })
   useEffect(() => {
     if (detailsUser?.data) {
-      setFullName(detailsUser.data.full_name || '');
-      setUserName(detailsUser.data.username || '');
+      setFormEdit((prev)=>{return{...prev, fullname:detailsUser.data.full_name || ''}})
+      setFormEdit((prev)=>{return{...prev, username:detailsUser.data.username || ''}})
     }
   }, [detailsUser]);
 
@@ -48,8 +51,8 @@ export default function EditProfile() {
   const handleSumbitForm = (e:React.SubmitEvent<HTMLFormElement>) => {
     e.preventDefault()
     const form = new FormData();
-    form.append("full_name", fullName);
-    form.append("username", username)
+    form.append("full_name", formEdit.fullname);
+    form.append("username", formEdit.username)
     if(file){
       form.append("avatar",file)
     }
@@ -113,8 +116,8 @@ export default function EditProfile() {
               <User2 className='absolute left-3 text-slate-400' size={15}/>
               <input
                 type="text"
-                value={fullName}
-                onChange={(e) => setFullName(e.target.value)}
+                value={formEdit.fullname}
+                onChange={(e) => setFormEdit((prev)=>{return{...prev,fullname:e.target.value}})}
                 className="w-full bg-[#182030] border border-[#2dd4bf]/40 rounded-md py-2.5 pl-9 pr-3 text-sm text-white focus:outline-none focus:border-[#2dd4bf]"
               />
             </div>
@@ -130,8 +133,8 @@ export default function EditProfile() {
               </span>
               <input
                 type="text"
-                value={username}
-                onChange={(e) => setUserName(e.target.value)}
+                value={formEdit.username}
+                onChange={(e) => setFormEdit((prev)=>{return{...prev,username:e.target.value}})}
                 className="w-full bg-[#161d2b] border border-slate-800/80 rounded-md py-2.5 pl-9 pr-3 text-sm text-white focus:outline-none focus:border-slate-700"
               />
             </div>

@@ -15,7 +15,7 @@ import {
   RefreshCw,
   CheckCircle2
 } from 'lucide-react';
-import RevenueChart from '../components/RevenueChart';
+import RevenueChart from '../../components/RevenueChart';
 
 const DashboardAdmin = () => {
   return (
