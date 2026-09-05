@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AI Chat Client</title>
+  <style>
+    * { box-sizing: border-box; font-family: Arial, sans-serif; }
+    body { background-color: #f4f6f8; margin: 0; padding: 20px; display: flex; justify-content: center; }
+    .card { background: #ffffff; width: 100%; max-width: 480px; padding: 24px; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
+    .form-group { margin-bottom: 16px; }
+    label { display: block; margin-bottom: 6px; font-weight: bold; }
+    input, select, textarea, button { width: 100%; padding: 10px; border-radius: 6px; border: 1px solid #ccc; font-size: 14px; }
+    button { background-color: #007bff; color: #ffffff; border: none; font-weight: bold; cursor: pointer; margin-top: 8px; }
+    button:disabled { background-color: #a0a0a0; cursor: not-allowed; }
+    .chat-box { border: 1px solid #e0e0e0; height: 260px; overflow-y: auto; padding: 12px; background: #fafafa; border-radius: 6px; margin-bottom: 12px; }
+    .msg { margin-bottom: 10px; padding: 10px 14px; border-radius: 8px; max-width: 80%; line-height: 1.4; }
+    .user-msg { background-color: #007bff; color: #ffffff; margin-left: auto; }
+    .ai-msg { background-color: #e9ecef; color: #333333; margin-right: auto; }
+    .hidden { display: none; }
+  </style>
+</head>
+<body>
+
+  <div class="card">
+    <!-- 1. Authentication Section -->
+    <div id="authSection">
+      <h2>User Login</h2>
+      <form id="loginForm">
+        <div class="form-group">
+          <label for="email">Email:</label>
+          <input type="email" id="email" placeholder="enter email" required>
+        </div>
+        <div class="form-group">
+          <label for="password">Password:</label>
+          <input type="password" id="password" placeholder="enter password" required>
+        </div>
+        <div class="form-group">
+          <label for="role">Role:</label>
+          <select id="role" required>
+            <option value="user">user</option>
+            <option value="admin">admin</option>
+          </select>
+        </div>
+        <button type="submit" id="loginBtn">Login</button>
+      </form>
+    </div>
+
+    <!-- 2. AI Chat Section -->
+    <div id="aiSection" class="hidden">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+        <h3>AI Assistant</h3>
+        <button onclick="logout()" style="width: auto; padding: 6px 12px; background-color: #dc3545;">Logout</button>
+      </div>
+
+      <div class="chat-box" id="chatBox">
+        <div class="msg ai-msg">Hello! Ask me anything.</div>
+      </div>
+
+      <textarea id="promptInput" rows="3" placeholder="Type your prompt here..."></textarea>
+      <button id="sendBtn" onclick="sendAiPrompt()">Send to AI</button>
+    </div>
+  </div>
+
+  <script>
+    const API_BASE = 'http://localhost:4000/api';
+
+    // 1. Submit Login Credentials ({ email, password, role })
+    document.getElementById('loginForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const loginBtn = document.getElementById('loginBtn');
+      loginBtn.disabled = true;
+
+      const payload = {
+        email: document.getElementById('email').value,
+        password: document.getElementById('password').value,
+        role: document.getElementById('role').value
+      };
+
+      try {
+        const response = await fetch(`${API_BASE}/users/login`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          // Include cookies sent back from the Express server
+          credentials: 'include',
+          body: JSON.stringify(payload)
+        });
+
+        const data = await response.json();
+
+        if (response.ok) {
+          showChatSection();
+        } else {
+          alert(data.message || 'Login failed. Please check your credentials.');
+        }
+      } catch (err) {
+        alert('Unable to connect to the backend server.');
+      } finally {
+        loginBtn.disabled = false;
+      }
+    });
+
+    // 2. Send Prompt Object ({ text }) to AI Endpoint
+    async function sendAiPrompt() {
+      const promptInput = document.getElementById('promptInput');
+      const text = promptInput.value.trim();
+      if (!text) return;
+
+      appendMessage(text, 'user-msg');
+      promptInput.value = '';
+
+      const sendBtn = document.getElementById('sendBtn');
+      sendBtn.disabled = true;
+
+      try {
+        const response = await fetch(`${API_BASE}/chat`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          // Attach stored HttpOnly cookie automatically
+          credentials: 'include',
+          body: JSON.stringify({ text: text })
+        });
+
+        const data = await response.json();
+
+        if (response.ok) {
+          // Extract reply string from server response
+          const aiReply = data.reply || data.data || 'Message received successfully.';
+          appendMessage(aiReply, 'ai-msg');
+        } else if (response.status === 401) {
+          alert('Session expired or cookie missing. Please log in again.');
+          location.reload();
+        } else {
+          appendMessage(data.message || 'Error processing your request.', 'ai-msg');
+        }
+      } catch (err) {
+        appendMessage('Failed to connect to the AI service.', 'ai-msg');
+      } finally {
+        sendBtn.disabled = false;
+      }
+    }
+
+    // Append Message Bubble to UI
+    function appendMessage(text, className) {
+      const chatBox = document.getElementById('chatBox');
+      const msgDiv = document.createElement('div');
+      msgDiv.className = `msg ${className}`;
+      msgDiv.textContent = text;
+      chatBox.appendChild(msgDiv);
+      chatBox.scrollTop = chatBox.scrollHeight;
+    }
+
+    // Toggle Visible UI View
+    function showChatSection() {
+      document.getElementById('authSection').classList.add('hidden');
+      document.getElementById('aiSection').classList.remove('hidden');
+    }
+
+    // Logout Functionality
+    function logout() {
+      location.reload();
+    }
+  </script>
+</body>
+</html>
