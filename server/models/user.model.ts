@@ -35,6 +35,10 @@ const user = new Schema <userTypes>({
         type:[String],
         required:false
     },
+    wishlist:{
+        type:[String],
+        default:[]
+    },
     avatar:{
     asset_id: {
         type:String

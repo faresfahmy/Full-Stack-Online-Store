@@ -70,3 +70,17 @@ export const getCurrentUser = asyncWrapper(
         });
     }
 )
+
+export const addOrDeleteProdInWishlist = asyncWrapper(
+    async(req:Request, res:Response, next:NextFunction)=>{
+        const idProduct = req.params.id;
+        const userObj = (req as Request & {user?:any}).user;      
+        if(idProduct&&userObj){
+            const updateWishlist = await UserServiceFactory.create().addOrDeleteInWishlist(idProduct as string, userObj.userId);
+            return res.status(200).json({
+                status:SUCCESS,
+                data:updateWishlist
+            })
+        }
+    }
+)

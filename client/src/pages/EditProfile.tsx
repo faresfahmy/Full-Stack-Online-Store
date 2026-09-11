@@ -8,12 +8,22 @@ import { motion } from "framer-motion"
 import { useNavigate } from 'react-router-dom';
 import LoadingButton from '../components/loadingButton';
 import { FormEdit } from '../../types/types';
+import z from 'zod';
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+
+const EditProfileSchema = z.object({
+  fullName: z.string().max(30, { message: "The full name must not exceed 30 characters in length" }),
+  username: z.string().max(30, { message: "The username must not exceed 30 characters" }),
+});
+
+type editProfileForm = z.infer<typeof EditProfileSchema>
 
 export default function EditProfile() {
   const [hoverAvatar, setHoverAvatar] = useState<boolean>(false);
-  const [formEdit,setFormEdit] = useState<FormEdit>({
-    fullname:'',
-    username:''
+  const [formEdit, setFormEdit] = useState<FormEdit>({
+    fullname: '',
+    username: ''
   })
   const [file, setFile] = useState<File | null>(null);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
@@ -21,22 +31,36 @@ export default function EditProfile() {
   const queryClient = useQueryClient();
   const detailsUser = useUserContext();
   const navigate = useNavigate();
+
+
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<editProfileForm>({
+    defaultValues: {
+      fullName: detailsUser?.data.full_name,
+      username: detailsUser?.data.username || ""
+    },
+    resolver: zodResolver(EditProfileSchema)
+  })
+
   const mutation = useMutation({
-    mutationFn:fetchEditUser,
-    onSuccess:(res)=>{
+    mutationFn: fetchEditUser,
+    onSuccess: (res) => {
       console.log("Edit SuccessFully", res)
       queryClient.setQueryData(["currentUser"], null);
-      queryClient.invalidateQueries({queryKey:["currentUser"]});
+      queryClient.invalidateQueries({ queryKey: ["currentUser"] });
       navigate("/profile");
     },
-    onError:(res)=>{
+    onError: (res) => {
       console.log("Edit Failed", res);
     }
   })
   useEffect(() => {
     if (detailsUser?.data) {
-      setFormEdit((prev)=>{return{...prev, fullname:detailsUser.data.full_name || ''}})
-      setFormEdit((prev)=>{return{...prev, username:detailsUser.data.username || ''}})
+      setFormEdit((prev) => { return { ...prev, fullname: detailsUser.data.full_name || '' } })
+      setFormEdit((prev) => { return { ...prev, username: detailsUser.data.username || '' } })
     }
   }, [detailsUser]);
 
@@ -48,22 +72,21 @@ export default function EditProfile() {
       setPreviewUrl(objectUrl);
     }
   };
-  const handleSumbitForm = (e:React.SubmitEvent<HTMLFormElement>) => {
-    e.preventDefault()
+  const handleSumbitForm = (data: editProfileForm) => {
     const form = new FormData();
-    form.append("full_name", formEdit.fullname);
-    form.append("username", formEdit.username)
-    if(file){
-      form.append("avatar",file)
+    form.append("full_name", data.fullName);
+    form.append("username", data.username)
+    if (file) {
+      form.append("avatar", file)
     }
-    mutation.mutate({dataForm:form, id:detailsUser?.data.id||''});
+    mutation.mutate({ dataForm: form, id: detailsUser?.data.id || '' });
 
   }
   return (
     <div className="min-h-screen bg-[#0b101b] flex items-center justify-center p-4">
-           <motion.div
-      initial={{x:-50, opacity:0}}
-      animate={{x:0, opacity:20}} className="bg-[#121927] w-full max-w-[420px] rounded-2xl p-8 flex flex-col items-center shadow-2xl border border-slate-800/40">
+      <motion.div
+        initial={{ x: -50, opacity: 0 }}
+        animate={{ x: 0, opacity: 20 }} className="bg-[#121927] w-full max-w-[420px] rounded-2xl p-8 flex flex-col items-center shadow-2xl border border-slate-800/40">
 
         <h2 className="text-white text-2xl font-bold tracking-tight mb-2">
           Edit Profile
@@ -99,7 +122,7 @@ export default function EditProfile() {
           </span>
         </div>
 
-        <form className="w-full space-y-5" onSubmit={(e) => handleSumbitForm(e)}>
+        <form className="w-full space-y-5" onSubmit={handleSubmit(handleSumbitForm)}>
           <input
             type="file"
             ref={fileInputRef}
@@ -113,13 +136,18 @@ export default function EditProfile() {
               Full Name
             </label>
             <div className="relative flex items-center">
-              <User2 className='absolute left-3 text-slate-400' size={15}/>
+              <User2 className='absolute left-3 text-slate-400' size={15} />
               <input
                 type="text"
-                value={formEdit.fullname}
-                onChange={(e) => setFormEdit((prev)=>{return{...prev,fullname:e.target.value}})}
+                {...register("fullName")}
                 className="w-full bg-[#182030] border border-[#2dd4bf]/40 rounded-md py-2.5 pl-9 pr-3 text-sm text-white focus:outline-none focus:border-[#2dd4bf]"
               />
+              {
+                errors.fullName && (
+                  <span className='text-xs text-red-500 mt-1 block'>{errors.fullName?.message}</span>
+                )
+              }
+
             </div>
           </div>
 
@@ -133,18 +161,22 @@ export default function EditProfile() {
               </span>
               <input
                 type="text"
-                value={formEdit.username}
-                onChange={(e) => setFormEdit((prev)=>{return{...prev,username:e.target.value}})}
+                {...register("username")}
                 className="w-full bg-[#161d2b] border border-slate-800/80 rounded-md py-2.5 pl-9 pr-3 text-sm text-white focus:outline-none focus:border-slate-700"
               />
+              {
+                errors.username && (
+                  <span className='text-xs text-red-500 mt-1 block'>{errors.username.message}</span>
+                )
+              }
             </div>
           </div>
 
           <button type='submit' disabled={mutation.isPending} className="w-full bg-[#46ecab] hover:bg-[#3be0a0] text-slate-950 font-semibold py-3 px-4 rounded-xl flex items-center justify-center gap-2 transition-colors mt-2 text-sm shadow-md">
             {
-              mutation.isPending?
-              <LoadingButton />
-              :"Save Changes"
+              mutation.isPending ?
+                <LoadingButton />
+                : "Save Changes"
             }
           </button>
         </form>

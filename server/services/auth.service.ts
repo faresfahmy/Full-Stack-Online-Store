@@ -16,8 +16,7 @@ export abstract class BaseAuthService<T> {
 
 
 export class AuthService extends BaseAuthService<userTypes | USERS[] | USERS> {
-
-    async loginService(data: ILoginInput): Promise<{ token: string; user: USERS  }> {
+    async loginService(data: ILoginInput): Promise<{ token: string; user: USERS }> {
         const { email, password, role } = data;
         const userObj = await User.findOne({ email }).select("-__v ");
         if (!userObj) {

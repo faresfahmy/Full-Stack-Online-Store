@@ -42,13 +42,13 @@ export const getAllProduct = asyncWrapper(
 
 export const searchProduct = asyncWrapper(
     async(req:Request<{},{},{},queryTypes>,res:Response, next:NextFunction )=>{
-        const {products, totalProducts, totalPages} = await ProductServiceFactory.create().searchProductService(req.query);
+        const {products,countProducts, totalPages} = await ProductServiceFactory.create().searchProductService(req.query);
         res.status(200).json(
             {
                 status:SUCCESS,
                 data:{
                     pages:totalPages,
-                    count:totalProducts,
+                    count:countProducts,
                     products
                 }
             }

@@ -7,6 +7,7 @@ import { generateToken } from "../utils/generateToken.ts";
 import { ERROR, FAIL } from "../utils/httpStatus.ts";
 import { appError } from "../utils/appError.ts";
 import { updateFile, uploadFile } from "../lib/uploadFiles.ts";
+import { Product } from "../models/product.model.ts";
 
 
 export abstract class BaseUserService<T> {
@@ -15,6 +16,7 @@ export abstract class BaseUserService<T> {
     abstract getUserService(idUser: string): Promise<T | null>
     abstract getCurrentUserService({ userId }: { userId: string }): Promise<USERS>
     abstract updateProductsPurchased(idProduct:string, idUser:string): Promise<void>;
+    abstract addOrDeleteInWishlist(idProduct:string, idUser:string): Promise<string[]|undefined>
 }
 
 
@@ -74,6 +76,27 @@ export class UserService extends BaseUserService<userTypes | USERS[] | USERS> {
             $push:{products_purchased:idProduct}
         }
         const update = await User.findByIdAndUpdate(idUser, operatorUpdate)
+    }
+    async addOrDeleteInWishlist(idProduct: string, idUser: string): Promise<any> {
+        const user = await User.findById(idUser).select("-password -__v");
+        if(!user){
+            throw appError(ERROR, null, 401, "401 Unauthorized")
+        }
+         const product = await Product.findById(idProduct);
+         if(!product){
+            throw appError(FAIL, "Product not found", 404);
+         }
+         let operatorUpdate;
+         let isExistProduct = user.wishlist?.includes(idProduct);
+         if(isExistProduct){
+            operatorUpdate = {$pull:{wishlist:idProduct}};
+         }
+         else{
+            operatorUpdate = {$push:{wishlist:idProduct}};
+         }
+         const updateWishlist= await User.findByIdAndUpdate(idUser, operatorUpdate, {new:true});
+         
+         return updateWishlist?.wishlist;
     }
 }
 

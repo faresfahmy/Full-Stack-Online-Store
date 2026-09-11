@@ -1,7 +1,7 @@
 import { Router } from "express";
 import { protect } from "../middleware/protect.middleware.ts";
 import { allowedTo } from "../middleware/allowedTo.middleware.ts";
-import { getAllUsers, getCurrentUser, getUser, update } from "../controllers/user.controller.ts";
+import { addOrDeleteProdInWishlist, getAllUsers, getCurrentUser, getUser, update } from "../controllers/user.controller.ts";
 import { upload } from "../middleware/upload.middleware.ts";
 
 
@@ -21,3 +21,7 @@ routesUser.route("/:id").get(protect,getUser);
 
 //Get Current User
 routesUser.route("/current").post(protect,getCurrentUser);
+
+
+//add product on wishlist
+routesUser.route("/wishlist/:id").patch(protect, addOrDeleteProdInWishlist);

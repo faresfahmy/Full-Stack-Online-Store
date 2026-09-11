@@ -9,7 +9,8 @@ export interface userTypes{
     email:string, 
     avatar?:FILE_CLOUDINARY|undefined,
     products_purchased?:string[],
-    role:string
+    role:string,
+    wishlist:string[]
 }
 export interface USERS{
     id?:string,
@@ -18,7 +19,8 @@ export interface USERS{
     email:string, 
     avatar?:FILE_CLOUDINARY|undefined,
     products_purchased?:string[],
-    role:string
+    role:string,
+    wishlist?:string[]
 }
 export interface FILE_CLOUDINARY{
     asset_id:string

@@ -14,7 +14,7 @@ import { LIMIT, PAGE } from "../utils/pagination.ts";
 export abstract class BaseProductService<T> {
     abstract addProductService(data: T, files: Files_Upload): Promise<{ createProduct: T }>
     abstract getAllProductService(query: queryTypes): Promise<{ products: T[], countProducts: number, countPages: number }>
-    abstract searchProductService(querySearch: queryTypes): Promise<{ products: T[], totalProducts: number, totalPages: number }>
+    abstract searchProductService(querySearch: queryTypes): Promise<{ products: T[], countProducts: number, totalPages: number }>
     abstract getProductService(id: string): Promise<{ product: T }>
     abstract deleteProductService(id: string): Promise<void>
     abstract updateProductService(id: string, data: T): Promise<{ product: T }>
@@ -100,21 +100,21 @@ export class ProductService extends BaseProductService<productTypes> {
     }
 
 
-    async searchProductService(querySearch: queryTypes): Promise<{ products: productTypes[]; totalProducts: number; totalPages: number; }> {
+    async searchProductService(querySearch: queryTypes): Promise<{ products: productTypes[]; countProducts: number; totalPages: number; }> {
         const { page, limit } = validateQuery(querySearch.limit ?? "20", querySearch.page ?? "1");
         if (!querySearch.q) {
             throw appError(FAIL, "Please enter the product name, description, price, or category.", 400);
         }
         const query = { $text: { $search: querySearch.q } };
 
-        const [products, totalProducts] = await Promise.all([
+        const [products, countProducts] = await Promise.all([
             Product.find(query).select("-__v").limit(limit).skip((page - 1) * limit),
             Product.countDocuments()
         ]);
-        const totalPages = Math.ceil(totalProducts / limit);
+        const totalPages = Math.ceil(countProducts / limit);
         return {
             products,
-            totalProducts,
+            countProducts,
             totalPages
         }
     }

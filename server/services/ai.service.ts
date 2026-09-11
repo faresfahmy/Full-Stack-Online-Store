@@ -1,12 +1,10 @@
 import { type GenerateContentResponse, GoogleGenAI } from "@google/genai";
-
 import { Chat } from "../models/chat.model.ts";
-import { v4 as uuidv4 } from 'uuid';
 import { appError } from "../utils/appError.ts";
 import { FAIL } from "../utils/httpStatus.ts";
 import { roleModelInAdmin, roleModelInUser } from "../prompts/prompts.ts";
-import mongoose from "mongoose";
 import type { RESPONSE_CHAT } from "../types/types.ts";
+import { AiRepoFactory } from "../factories/factoriesRepo/AiRepo.factory.ts";
 
 
 
@@ -21,9 +19,9 @@ export abstract class BaseChatService {
 export class chatsService extends BaseChatService {
     async sendPromptToChat(userNewPrompt: string, id: string, roleUser: string): Promise<RESPONSE_CHAT> {
         const today = new Date().toISOString().slice(0, 10);
-        const findChat = await Chat.findOne({ "userId": id })
+        const findChat = await AiRepoFactory.create().findChat(id)
         if (!findChat) {
-            await Chat.create({
+            await AiRepoFactory.create().createChat({
                 userId: id,
                 messages: [],
                 updatedAt: today,
@@ -40,8 +38,7 @@ export class chatsService extends BaseChatService {
             throw appError(FAIL, "Check your internet connection.", 400);
         }
         history.push({ role: "model", parts: [{ text: response.text }] });
-        const saveMessage = await Chat.findOneAndUpdate({ "userId": id }, { $set: { messages: history }, updatedAt: today }, { new: true });
-
+        const saveMessage = await AiRepoFactory.create().findOneAndUpdateChat({ "userId": id }, { $set: { messages: history }, updatedAt: today })
         return {
             userId: saveMessage?.userId,
             modelId: saveMessage?._id,
@@ -57,16 +54,6 @@ export class chatsService extends BaseChatService {
         return { messages }
     }
 }
-
-
-export const getMessageChatService = async (id: string) => {
-    const messages = await Chat.findOne({ "userId": id });
-    if (messages?.messages.length == 0) {
-        throw appError(FAIL, "No previous conversations", 404);
-    }
-    return { messages }
-}
-
 // export const deleteMessageChatService = async (idMessage: string, userId: string) => {
 //     await connect();
 //     const isValidObjectId = mongoose.Types.ObjectId.isValid(idMessage);

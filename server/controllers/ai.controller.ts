@@ -1,7 +1,7 @@
 import type { NextFunction, Request, Response } from "express";
 import { asyncWrapper } from "../middleware/asyncWrapper.middleware.ts";
 import { decode, type JwtPayload } from "jsonwebtoken";
-import { chatsService, getMessageChatService } from "../services/ai.service.ts";
+import { chatsService } from "../services/ai.service.ts";
 import { SUCCESS } from "../utils/httpStatus.ts";
 import type{ _Id } from "../types/types.ts";
 import { ChatServiceFactory } from "../factories/ChatServer.factory.ts";
