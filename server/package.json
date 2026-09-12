@@ -1,7 +1,7 @@
 {
   "type": "module",
   "scripts": {
-    "run:dev": "node server.ts"
+    "run:dev": "node app.ts"
   },
   "devDependencies": {
     "@types/bcrypt": "^6.0.0",
