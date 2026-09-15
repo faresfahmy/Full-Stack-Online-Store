@@ -23,10 +23,11 @@ export const fetchSginUpUser = async (dataForm: FormData) => {
     return signup;
 }
 export const getDetailsCurrentUser = async () => {
-    const detailsUser = await axios.post("http://localhost:4000/api/users/current", {},
+    const detailsUser = await axios.get("http://localhost:4000/api/users/current", 
         {
             withCredentials: true
         })
+        console.log(detailsUser)
     return detailsUser;
 }
 
@@ -37,10 +38,11 @@ export const fetchLogoutUser = async () => {
         })
 }
 
-export const fetchEditUser = async ({dataForm, id}:{dataForm:FormData, id:string}) => {
-    const editUser = await axios.patch(`http://localhost:4000/api/users/${id}`, dataForm, {
+export const fetchEditUser = async ({dataForm}:{dataForm:FormData}) => {
+    const editUser = await axios.patch(`http://localhost:4000/api/users`, dataForm, {
         withCredentials: true
     }
     )
     return editUser;
 }
+

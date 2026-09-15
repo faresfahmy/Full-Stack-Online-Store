@@ -1,10 +1,12 @@
-import { v2 as cloudinary, type UploadApiResponse } from "cloudinary";
-import { config } from "dotenv"
+import {  type UploadApiResponse } from "cloudinary";
 import { appError } from "../utils/appError.ts";
 import { ERROR, FAIL } from "../utils/httpStatus.ts";
 import type { Files_Upload } from "../types/types.ts";
-import { upload } from "../middleware/upload.middleware.ts";
-config();
+import  cloudinary  from "../config/cloudinary.ts";
+
+
+
+
 export const uploadFile = async (path: string | undefined, folderName: string) => {
     try {
         if (path) {

@@ -7,7 +7,6 @@ import { decode } from "node:punycode";
 export const protect = async (req: Request, res: Response, next: NextFunction) => {
     try {
         const token = req.cookies?.token;
-        
         if (!token) {
             return next(appError(ERROR, null, 401, "401 Unauthorized"));
         }

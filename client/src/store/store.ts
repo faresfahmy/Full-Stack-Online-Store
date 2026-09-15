@@ -1,5 +1,5 @@
 import { configureStore } from '@reduxjs/toolkit'
-import counterReducer from './slices/counterSlilce' // استيراد الـ reducer الافتراضي
+import counterReducer from './slices/counterSlilce'
 
 export const store = configureStore({
   reducer: {

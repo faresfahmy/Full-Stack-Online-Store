@@ -19,3 +19,13 @@ export const fetchAllProducts = async ({page,search,category, limit}:{page?:numb
     )
     return allProduct.data;
 }
+
+
+export const fetchAddProducts = async ({dataForm}:{dataForm:FormData})=>{
+    const addProduct = await axios.post(`http://localhost:4000/api/products`,dataForm,{
+        withCredentials:true,
+        headers:{"Content-Type":"multipart/form-data"}
+    });
+    console.log(addProduct);
+    return addProduct;
+}

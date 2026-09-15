@@ -14,7 +14,7 @@ export abstract class BaseUserService<T> {
     abstract getAllUsersService(q: queryTypes): Promise<[T, number, number]>
     abstract updateUserService(idUser: string, data: userUpdate, file?: Express.Multer.File): Promise<T | null>
     abstract getUserService(idUser: string): Promise<T | null>
-    abstract getCurrentUserService({ userId }: { userId: string }): Promise<USERS>
+    abstract getCurrentUserService(userId: string ): Promise<USERS>
     abstract updateProductsPurchased(idProduct:string, idUser:string): Promise<void>;
     abstract addOrDeleteInWishlist(idProduct:string, idUser:string): Promise<string[]|undefined>
 }
@@ -44,7 +44,7 @@ export class UserService extends BaseUserService<userTypes | USERS[] | USERS> {
             return userObj;
         }
         if (file && user?.avatar) {
-            file_Update = await updateFile(file.path, user?.avatar.public_id);
+            file_Update = await updateFile(file.path, user.avatar.public_id);
             userObj = await User.findByIdAndUpdate(idUser, { full_name, username, avatar: file_Update }, { returnDocument: "after", runValidators: true, }).select("-password -__v");
             return userObj
         }
@@ -56,8 +56,8 @@ export class UserService extends BaseUserService<userTypes | USERS[] | USERS> {
         return userObj;
     }
     
-    async getCurrentUserService({ userId }: { userId: string; }): Promise<USERS> {
-        const userData = await User.findById({userId }).select("-password -__v");
+    async getCurrentUserService(userId: string): Promise<USERS> {
+        const userData = await User.findById(userId).select("-password -__v");
         if (!userData) {
             throw appError(ERROR, null, 401, "401 Unauthorized")
         }

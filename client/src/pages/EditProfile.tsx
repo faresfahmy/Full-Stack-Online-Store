@@ -79,7 +79,7 @@ export default function EditProfile() {
     if (file) {
       form.append("avatar", file)
     }
-    mutation.mutate({ dataForm: form, id: detailsUser?.data.id || '' });
+    mutation.mutate({ dataForm: form });
 
   }
   return (

@@ -7,20 +7,15 @@ import { routesUser } from './routes/user.route.ts'
 import { ERROR, FAIL } from "./utils/httpStatus.ts";
 import { routesProducts } from "./routes/product.route.ts";
 import { routesChat } from "./routes/chat.route.ts";
-import { fileURLToPath } from "node:url";
 import { connectDB } from "./config/database.ts";
 import { routeOrder } from "./routes/order.route.ts";
 import { routesAuth } from "./routes/auth.route.ts";
 import { app } from "./server.ts";
-
-
 // const __pathFile = fileURLToPath(import.meta.url)
 // const __dirname = path.dirname(__pathFile)
-// app.use(express.static(path.join(__dirname)))
+
 
 dotenv.config()
-const port = process.env.PORT || 4000
-
 app.use(express.json())
 
 app.use(cookieParser())
@@ -31,9 +26,6 @@ app.use(cors({
      methods: ["POST", "GET", "PATCH","PUT", "DELETE"],
 
 }))
-
-
-
 
 
 //Connect on MONGODB
@@ -52,7 +44,7 @@ app.use("/api/chat",routesChat)
 app.use("/api/orders", routeOrder)
 
 
-
+// app.use(express.static(path.join(__dirname)))
 
 //Handle ERROR
 app.use((error:any, req:Request, res:Response, next:NextFunction)=>{

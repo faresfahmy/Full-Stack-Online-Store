@@ -20,16 +20,16 @@ export const getAllUsers = asyncWrapper(
     }
 )
 
-export const update = asyncWrapper(
-    async (req: Request<_Id, {}, userUpdate>, res: Response, next: NextFunction) => {
+export const updateUser = asyncWrapper(
+    async (req: Request<{}, {}, userUpdate>, res: Response, next: NextFunction) => {
         let userObj;
+        const user = (req as Request & { user?: any }).user;
         const path = req.file;
-        console.log(req.body);
         if (path) {
-            userObj = await UserServiceFactory.create().updateUserService(req.params.id, req.body, path);
+            userObj = await UserServiceFactory.create().updateUserService(user.userId, req.body, path);
         }
         else {
-            userObj = await UserServiceFactory.create().updateUserService(req.params.id, req.body)
+            userObj = await UserServiceFactory.create().updateUserService(user.userId, req.body)
         }
 
         if (!userObj) {
@@ -60,10 +60,10 @@ export const getUser = asyncWrapper(
 export const getCurrentUser = asyncWrapper(
     async (req: Request, res: Response, next: NextFunction) => {
         const userObg = (req as Request & { user?: any }).user;
-        if (!userObg) {
+        if (!userObg.userId) {
             return next(appError(ERROR, null, 401, "401 Unauthorized"));
         }
-        const getUserCurrentObj = await UserServiceFactory.create().getCurrentUserService(userObg);
+        const getUserCurrentObj = await UserServiceFactory.create().getCurrentUserService(userObg.userId);
         res.status(200).json({
             status: SUCCESS,
             data: getUserCurrentObj,

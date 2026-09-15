@@ -1,12 +1,13 @@
 export interface userTypes {
-    id:string,
-    full_name: string,
-    username: string,
-    password: string,
-    email: string,
-    avatar?: FILE_CLOUDINARY | undefined,
-    products_purchased?: string[],
-    role: string
+
+    id?:string,
+    full_name:string,
+    username:string,
+    email:string, 
+    avatar?:FILE_CLOUDINARY|undefined,
+    products_purchased?:string[],
+    role:string,
+    wishlist?:string[]
 }
 export interface payloadLogin {
     password: string,

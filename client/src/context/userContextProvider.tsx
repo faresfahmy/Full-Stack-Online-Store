@@ -10,6 +10,7 @@ export const useUserContext = () => useContext(UserContext);
 export const UserContextProvider = ({ children }: { children: ReactNode }) => {
   const { user, isLoading } = useDetailsUser();
   const [isMounted, setIsMounted] = useState(false);
+  
   useEffect(() => {
     setIsMounted((prev) => !prev)
     return () => {
