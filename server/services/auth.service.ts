@@ -40,7 +40,7 @@ export class AuthService extends BaseAuthService<userTypes | USERS[] | USERS> {
     async registerService(data: userTypes, file: Express.Multer.File | undefined): Promise<{ user: USERS | USERS[] | userTypes; token: string; }> {
         const { full_name, username, password, email, role } = data;
 
-        const userObj = await User.findOne({ "email": email });
+        const userObj = await User.findOne({ "email": email }).lean();
         if (userObj) {
             throw appError(FAIL, { user: "this is email not validate" }, 400);
         }

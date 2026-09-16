@@ -4,11 +4,13 @@ import type { OrderTypes } from "../types/types.ts";
 const order = new Schema<OrderTypes>({
     idProduct:{
         type:String,
-        require:true
+        require:true,
+        ref:"products"
     },
     idBuyer:{
         type:String,
-        require:true
+        require:true,
+        ref:"users"
     },
 
     totalAmount:{
@@ -25,7 +27,5 @@ const order = new Schema<OrderTypes>({
 })
 order.index({
     totalAmount:"text",
-    subtotal:"text",
-    shippingFee:"text",
 })
 export const Order = mongoose.model<OrderTypes>("order", order);

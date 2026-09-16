@@ -36,7 +36,7 @@ export class ProductService extends BaseProductService<productTypes> {
         } = data;
         let productImage;
 
-        const productCheck = await Product.findOne({ "product_name": product_name });
+        const productCheck = await Product.findOne({ "product_name": product_name }).lean();
         if (productCheck) {
             throw appError(FAIL, "The product already exists", 400);
         }
@@ -46,7 +46,7 @@ export class ProductService extends BaseProductService<productTypes> {
         else {
             throw appError(FAIL, "Please upload photos of the product", 400)
         }
-        const count = await Product.countDocuments()
+        const count = await Product.countDocuments().lean()
         const skuProduct = generatetSku(count);
 
         
@@ -85,8 +85,8 @@ export class ProductService extends BaseProductService<productTypes> {
         }
 
         const [products, countProducts] = await Promise.all([
-            Product.find(q_query).select("-__v").limit(limit).skip((page - 1) * limit),
-            Product.countDocuments(q_query)
+            Product.find(q_query).select("-__v").limit(limit).skip((page - 1) * limit).lean(),
+            Product.countDocuments(q_query).lean()
         ])
         if (products.length == 0) {
             throw appError(FAIL, "Not Found Product", 404);
@@ -108,8 +108,8 @@ export class ProductService extends BaseProductService<productTypes> {
         const query = { $text: { $search: querySearch.q } };
 
         const [products, countProducts] = await Promise.all([
-            Product.find(query).select("-__v").limit(limit).skip((page - 1) * limit),
-            Product.countDocuments()
+            Product.find(query).select("-__v").limit(limit).skip((page - 1) * limit).lean(),
+            Product.countDocuments().lean()
         ]);
         const totalPages = Math.ceil(countProducts / limit);
         return {
@@ -121,7 +121,7 @@ export class ProductService extends BaseProductService<productTypes> {
 
 
     async getProductService(id: string): Promise<{ product: productTypes; }> {
-        const product = await Product.findOne({ "_id": id }).select("-__v");
+        const product = await Product.findOne({ "_id": id }).select("-__v").lean();
         if (!product) {
             throw appError(FAIL, "Not Found Product", 404)
         }
@@ -145,7 +145,7 @@ export class ProductService extends BaseProductService<productTypes> {
     }
 
     async decreasingProductQuantity(idProduct: string): Promise<void> {
-        const product = await Product.findById(idProduct);
+        const product = await Product.findById(idProduct).lean();
         if(!product||!product.quantity){
             throw appError(FAIL, "this is product not found");
         }

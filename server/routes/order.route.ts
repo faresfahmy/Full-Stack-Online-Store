@@ -10,4 +10,4 @@ export const routeOrder = Router();
 routeOrder.route("/").get(protect, getAllOrdersController)
 routeOrder.route("/create-session").post(protect, createSessionPaymentController)
 routeOrder.route("/success").get(protect, addThePaymentProcessController)
-// routeOrder.route("/cancel").get(protect)
+routeOrder.route("/cancel").get(protect)

@@ -12,6 +12,7 @@ import Profile from "./pages/Profile"
 import EditProfile from "./pages/EditProfile"
 import Products from "./pages/Products"
 import AddProduct from "./pages/admin/AddProduct"
+import Orders from "./pages/admin/Orders"
 export default function App() {
   const isAuth = useUserContext();
   console.log(isAuth);
@@ -29,6 +30,7 @@ export default function App() {
                 <Route path="/profile" element={<Profile />} />
                 <Route path="/profile/edit" element={<EditProfile />} />
                 <Route path="/products/add-product" element={<AddProduct />} />
+                <Route path="/orders" element={<Orders />} />
               </Route>
 
             ) : (

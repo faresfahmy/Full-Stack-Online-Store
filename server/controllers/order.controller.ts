@@ -13,7 +13,7 @@ export const getAllOrdersController = asyncWrapper(
             data:{
                 pages:totalPage,
                 count:totalOrders,
-                orders
+                orders:orders, 
             }
         })
     }
@@ -22,6 +22,7 @@ export const getAllOrdersController = asyncWrapper(
 export const createSessionPaymentController = asyncWrapper(
     async (req:Request<{},{},ADD_ORDER>, res:Response, next:NextFunction)=>{
         const body = req.body;
+        console.log(body)
         const {paymentLink} = await OrderServiceFactory.create().creatSession(body);
         res.status(200).json({
             status:SUCCESS,

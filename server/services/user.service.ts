@@ -25,8 +25,8 @@ export class UserService extends BaseUserService<userTypes | USERS[] | USERS> {
         const query = q ?? {};
         const { limit, page } = validateQuery(query.limit || "20", query.page || "1");
         const [users, totalUsers] = await Promise.all([
-            User.find().select("-password -__v").limit(limit).skip((page - 1) * limit),
-            User.countDocuments()
+            User.find().select("-password -__v").limit(limit).skip((page - 1) * limit).lean(),
+            User.countDocuments().lean()
         ])
         const totalPages = Math.ceil(totalUsers / limit);
         return [users, totalUsers, totalPages];
@@ -37,7 +37,7 @@ export class UserService extends BaseUserService<userTypes | USERS[] | USERS> {
         const { full_name, username } = data;
         let userObj;
         let file_Update
-        const user = await User.findById(idUser).select("-password -__v");
+        const user = await User.findById(idUser).select("-password -__v").lean();
         if (!user?.avatar && file) {
             file_Update = await uploadFile(file.path, "avatar");
             userObj = await User.findByIdAndUpdate(idUser, { full_name, username, avatar: file_Update }, { returnDocument: "after", runValidators: true, }).select("-password -__v");
@@ -52,7 +52,7 @@ export class UserService extends BaseUserService<userTypes | USERS[] | USERS> {
         return userObj
     }
     async getUserService(idUser: string): Promise<userTypes | USERS | USERS[] | null> {
-        const userObj = await User.findById({ "_id": idUser }).select("-password -__v");
+        const userObj = await User.findById({ "_id": idUser }).select("-password -__v").lean();
         return userObj;
     }
     
@@ -78,11 +78,11 @@ export class UserService extends BaseUserService<userTypes | USERS[] | USERS> {
         const update = await User.findByIdAndUpdate(idUser, operatorUpdate)
     }
     async addOrDeleteInWishlist(idProduct: string, idUser: string): Promise<any> {
-        const user = await User.findById(idUser).select("-password -__v");
+        const user = await User.findById(idUser).select("-password -__v").lean();
         if(!user){
             throw appError(ERROR, null, 401, "401 Unauthorized")
         }
-         const product = await Product.findById(idProduct);
+         const product = await Product.findById(idProduct).lean();
          if(!product){
             throw appError(FAIL, "Product not found", 404);
          }

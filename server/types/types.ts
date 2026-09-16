@@ -132,7 +132,14 @@ export const categoriesProduct:string[] = [
     "Accessories & Gear",
     "Accessories"   
 ]
-
+export interface ORDER_RESPONSE{
+    _id:string,
+    idProduct:productTypes,
+    idBuyer:userTypes,
+    totalAmount: number,
+    subtotal: number,
+    paymentStatus: string
+}
 
 //Params Is
 export interface _Id{

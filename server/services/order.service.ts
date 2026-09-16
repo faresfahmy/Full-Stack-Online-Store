@@ -3,7 +3,7 @@ import { Order } from "../models/order.model.ts";
 import { Product } from "../models/product.model.ts"
 import { Shipping } from "../models/shipping.model.ts";
 import { User } from "../models/user.model.ts";
-import type { OrderTypes, ADD_ORDER, queryTypes } from "../types/types.ts";
+import type { OrderTypes, ADD_ORDER, queryTypes, ORDER_RESPONSE } from "../types/types.ts";
 import { appError } from "../utils/appError.ts"
 import { ERROR, FAIL } from "../utils/httpStatus.ts"
 import Stripe from 'stripe';
@@ -14,11 +14,11 @@ export abstract class BaseOrderService<T> {
     abstract addOrder({ idProduct, idUser, idShipping, coupon, session_id }: ADD_ORDER): Promise<OrderTypes>
     abstract creatSession({ idProduct, idUser, idShipping, coupon }: ADD_ORDER): Promise<{ paymentLink: string | null }>
     abstract calcTheTotalCost({ idProduct, idUser, idShipping, coupon }: ADD_ORDER): Promise<T>
-    abstract getAllOrders(query: queryTypes): Promise<{ orders: OrderTypes[], totalOrders: number, totalPage: number }>
+    abstract getAllOrders(query: queryTypes): Promise<{ orders: ORDER_RESPONSE[], totalOrders: number, totalPage: number }>
 
 }
 export class OrderService extends BaseOrderService<OrderTypes> {
-    async addOrder({ idProduct, idUser, idShipping, coupon, session_id }: ADD_ORDER): Promise<OrderTypes> {
+    async addOrder({ idProduct, idUser,  session_id }: ADD_ORDER): Promise<OrderTypes> {
         try {
             const stripe = new Stripe(process.env.SECERT_KEY_STRIPE!);
             if (!session_id) {
@@ -82,9 +82,9 @@ export class OrderService extends BaseOrderService<OrderTypes> {
     }
     async calcTheTotalCost({ idProduct, idUser, idShipping, coupon }: ADD_ORDER): Promise<OrderTypes> {
         const getAll = await Promise.all([
-            Product.findOne({ "_id": idProduct }).select("-__v"),
-            User.findOne({ "_id": idUser }).select("-__v -__password"),
-            Shipping.findOne({ "_id": idShipping }).select("-__v")
+            Product.findOne({ "_id": idProduct }).select("-__v").lean(),
+            User.findOne({ "_id": idUser }).select("-__v -__password").lean(),
+            Shipping.findOne({ "_id": idShipping }).select("-__v").lean()
         ]);
         if (!getAll[0]) {
             throw appError(FAIL, "This is Product Not Found", 404);
@@ -112,23 +112,32 @@ export class OrderService extends BaseOrderService<OrderTypes> {
         } as OrderTypes;
         return totalCost;
     }
-    async getAllOrders(query: queryTypes): Promise<{ orders: OrderTypes[]; totalOrders: number; totalPage: number; }> {
-        const { limit, page } = validateQuery(query.limit || LIMIT.toString(), query.page || PAGE.toString());
-        let q_Search: Record<string, any> = {};
-        if (query.q) {
-            q_Search.q = { $text: { $search: query.q } };
-        }
-        const [orders, totalOrders] = await Promise.all([
-            Order.find(q_Search).select("-__v").limit(limit).skip((page - 1) * limit),
-            Order.countDocuments()
-        ])
-        const totalPage = Math.ceil(totalOrders / limit);
-        return {
-            orders,
-            totalOrders,
-            totalPage
-        }
-
+async getAllOrders(query: queryTypes): Promise<{ orders: ORDER_RESPONSE[]; totalOrders: number; totalPage: number; }> {
+    const { limit, page } = validateQuery(query.limit || LIMIT.toString(), query.page || PAGE.toString());
+    
+    let q_Search: Record<string, any> = {};
+    if (query.q) {
+        q_Search = { $text: { $search: query.q } }; 
     }
 
+    const [orders, totalOrders] = await Promise.all([
+        Order.find(q_Search)
+            .select("-__v -sessionId")
+            .populate("idBuyer", "-__v -password") 
+            .populate("idProduct", "-__v")        
+            .limit(limit)
+            .skip((page - 1) * limit)
+            .lean(), 
+        Order.countDocuments(q_Search) 
+    ]);
+    const totalPage = Math.ceil(totalOrders / limit);
+
+    return {
+        orders,
+        totalOrders,
+        totalPage
+    };
 }
+
+}
+

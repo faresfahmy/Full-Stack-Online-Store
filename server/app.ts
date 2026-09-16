@@ -64,3 +64,66 @@ app.use((error:any, req:Request, res:Response, next:NextFunction)=>{
         })
     }
 })
+
+
+
+
+
+
+
+
+
+//Handle Resource If not Found Router
+
+//global Auth middleware for not found router
+app.all('/{*auth}', (req: Request, res: Response, next: any) => {
+    res.status(404).json({
+        status: ERROR,
+        data: null,
+        message: "This resource is not available",
+        code: 404
+    })
+})
+
+
+//global Orders middleware for not found router
+app.all('/{*orders}', (req: Request, res: Response, next: any) => {
+    res.status(404).json({
+        status: ERROR,
+        data: null,
+        message: "This resource is not available",
+        code: 404
+    })
+})
+
+
+//global Chat middleware for not found router
+app.all('/{*chat}', (req: Request, res: Response, next: any) => {
+    res.status(404).json({
+        status: ERROR,
+        data: null,
+        message: "This resource is not available",
+        code: 404
+    })
+})
+
+//global Products middleware for not found router
+app.all('/{*products}', (req: Request, res: Response, next: any) => {
+    res.status(404).json({
+        status: ERROR,
+        data: null,
+        message: "This resource is not available",
+        code: 404
+    })
+})
+
+//global Users middleware for not found router
+app.all('/{*users}', (req: Request, res: Response, next: any) => {
+    res.status(404).json({
+        status: ERROR,
+        data: null,
+        message: "This resource is not available",
+        code: 404
+    })
+})
+

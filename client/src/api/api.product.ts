@@ -13,7 +13,8 @@ export const fetchAllProducts = async ({page,search,category, limit}:{page?:numb
         params:{
             page:page||1,
             limit:limit||5,
-            category
+            category,
+            ...(search && { q: search })
         }
     }
     )
